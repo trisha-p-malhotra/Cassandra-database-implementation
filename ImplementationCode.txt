@@ -1,0 +1,74 @@
+
+Group 4- DBSI
+Cassandra:
+
+Due to the hardware limitations of our systems, we chose to use replication factor of 2 with simpleStrategy
+
+We used 2 Pcs to test the distributed nature of cassandra and its handling nature 
+---------------------------------------------------------------------------------------------------------------------
+at node 2 
+---------------------------------------------------------------------------------------------------------------------
+create keyspace finalproject with replication = {'class':'SimpleStrategy','replication_factor':2};
+
+use finalproject;
+
+create table project_game_desc_sales(game_name varchar,year_of_release int,developer varchar,Genre_id int,NA_sales float,JPN_sales float,EU_sales float,Global_sales float,other_sales float,game_id int primary key,platform_id int,publisher_id int);
+
+create project_table genre(Genre varchar,Genre_id int primary key);
+
+
+
+create table project_platform(Platform_id int primary key,Platform_name varchar);
+
+
+create table project_publisher(publisher_id int primary key,publisher_name varchar);
+
+
+create table project_review_table(critic_score int,critic_count int,user_score float,user_count int,game_id int primary key,Rating varchar);
+
+--------------------------------------------------------------------------------------------------------------------------
+at node 1
+--------------------------------------------------------------------------------------------------------------------------
+
+copy project_game_desc_sales from '/home/chandu/Desktop/projectdbsi/game_desc_sales.csv' with DELIMITER=',' AND HEADER = TRUE;
+
+copy project_genre from '/home/chandu/Desktop/projectdbsi/genre.csv' with DELIMITER=',' AND HEADER = TRUE;
+
+copy project_platform from '/home/chandu/Desktop/projectdbsi/platform.csv' with DELIMITER=',' AND HEADER = TRUE;
+
+
+copy project_publisher from '/home/chandu/Desktop/projectdbsi/publisher.csv' with DELIMITER=',' AND HEADER = TRUE;
+
+copy project_review_table from '/home/chandu/Desktop/projectdbsi/review_table.csv' with DELIMITER=',' AND HEADER = TRUE;
+
+
+
+--------------------------------------------------------------------------------------------------------------------------
+at node 1 
+--------------------------------------------------------------------------------------------------------------------------
+
+
+select * from project_game_desc_sales limit 5;
+// after bringing down the node 2 
+select count(*) from project_game_desc_sales;
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------
+after bringing up the node 2 
+---------------------------------------------------------------------------------------------------------------------------------
+select count(*) from project_game_desc_sales;
+----------------------------------------------------------------------------------------------------------------------------
+
+both at node1 and node2 
+----------------------------------------------------------------------------------------------------------------------------
+
+
+select * from project_genre limit 5;
+
+select * from project_publisher limit 5;
+
+select * from project_platform limit 5;
+
+select * from project_review_table limit 5;
